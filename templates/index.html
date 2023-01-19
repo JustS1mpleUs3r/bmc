@@ -1,0 +1,206 @@
+<!-- Inheriting all linked files -->
+{% extends 'base.html' %} {% include 'header.html' %}
+
+<!-- head section -->
+{% block title %} Flask CRUD operation {% endblock %}
+
+
+<!-- Body section -->
+{% block body %}
+<style>
+    .buttonIn {
+            width: 300px;
+            position: relative;
+        }
+</style >
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <style>
+                .switch-toggle {
+                   float: left;
+                   background: #242729;
+                    margin:-3px;
+                    border-radius: 5px;
+                    max-height: 40px;
+                }
+                .switch-toggle input {
+                  position: absolute;
+                  opacity: 0;
+                }
+                .switch-toggle input + label {
+                  padding: 7px;
+                  float:left;
+                  color: #fff;
+                  cursor: pointer;
+                }
+                .switch-toggle input:checked + label {
+                    background: #12536A;
+                    max-height: 40px;
+
+                }
+                label {
+                    margin-bottom: 0rem;
+                }
+            </style>
+
+            <div class="jumbotron p-3">
+                {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+
+                <div class="alert alert-success alert-dismissable" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">
+                            x
+                        </span>
+                    </button> {{message}}
+                </div>
+                {% endfor %} {% endif %} {%endwith%}
+                <h3>Rooms on {{date}}
+                    <form action="{{url_for('edit_rooms', date=date)}}">
+                        <button style="margin:5px;" class="btn btn-bmc float-right" type="submit"> Edit Rooms </button>
+                    </form>
+<!--                    <button style="margin:5px;" type="button" class="btn btn-bmc float-right " data-toggle="modal" data-target="#mymodal"> Add room</button>-->
+
+                </h3>
+                <div class="switch-toggle switch-3 switch-candy float-right" >
+
+                      <input id="am_button" name="state-d" type="radio" checked="checked" />
+                      <label for="am_button" onclick="">AM</label>
+
+                      <input id="pm_button" name="state-d" type="radio" />
+                      <label for="pm_button" class="disabled" onclick="">PM</label>
+
+                      <input id="evening_button" name="state-d" type="radio" />
+                      <label for="evening_button" onclick="">EVENING</label>
+
+                </div>
+                <form id="chooseDate" action="{{url_for('index')}}" method="GET">
+                    <label for="date">Date of schedule:</label>
+                    <input type="date" id="date" name="date" oninput="chooseDate.submit()" value={{date}}>
+                    <noscript>
+                        <input type="submit" value="Submit">
+                    </noscript>
+                </form>
+
+                <div id="am">
+                    <table class="table table-hover table-dark">
+
+                        <tr>
+                            <th>Room#</th>
+                            <th>Provider</th>
+                            <th>Medical Assistant</th>
+                            <th>Medical Assistant 2</th>
+                        </tr>
+
+                            {% for row in room_data %}
+                            <tr>
+                                <td>{{row.room_number}}</td>
+                                <td><img src={{(row.provider.photo)}} height="50" style="margin-right: 15px" > {{row.provider.full_name}}</td>
+                                <td><img src={{(row.ma.photo)}} height="50" style="margin-right: 15px" >{{row.ma.full_name}}</td>
+                                <td><img src={{(row.ma_helper.photo)}} height="50" style="margin-right: 15px" >{{row.ma_helper.full_name}}</td>
+
+                            </tr>
+                            {% endfor %}
+                    </table>
+                </div>
+                <div id="pm" style="display: none">
+                    <table class="table table-hover table-dark">
+
+                        <tr>
+                            <th>Room#</th>
+                            <th>Provider</th>
+                            <th>Medical Assistant</th>
+                            <th>Medical Assistant 2</th>
+                        </tr>
+
+                            {% for row in room_data_pm %}
+                            <tr>
+                                <td>{{row.room_number}}</td>
+                                <td><img src={{(row.provider.photo)}} height="50" style="margin-right: 15px" > {{row.provider.full_name}}</td>
+                                <td><img src={{(row.ma.photo)}} height="50" style="margin-right: 15px" >{{row.ma.full_name}}</td>
+                                <td><img src={{(row.ma_helper.photo)}} height="50" style="margin-right: 15px" >{{row.ma_helper.full_name}}</td>
+                            </tr>
+                            {% endfor %}
+                    </table>
+                </div>
+                <div id="evening">
+                    <table class="table table-hover table-dark">
+
+                        <tr>
+                            <th>Room#</th>
+                            <th>Provider</th>
+                            <th>Medical Assistant</th>
+                            <th>Medical Assistant 2</th>
+                        </tr>
+
+                            {% for row in room_data_ev %}
+                            <tr>
+                                <td>{{row.room_number}}</td>
+                                <td><img src={{(row.provider.photo)}} height="50" style="margin-right: 15px" > {{row.provider.full_name}}</td>
+                                <td><img src={{(row.ma.photo)}} height="50" style="margin-right: 15px" >{{row.ma.full_name}}</td>
+                                <td><img src={{(row.ma_helper.photo)}} height="50" style="margin-right: 15px" >{{row.ma_helper.full_name}}</td>
+                            </tr>
+                            {% endfor %}
+                    </table>
+                </div>
+
+            </div>
+
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.css" />
+
+            <script type="text/javascript">
+               $(".bruh ").select2({
+                    templateResult: formatState,
+                    templateSelection: formatState
+                });
+
+                function formatState (opt) {
+                    if (!opt.id) {
+                        return opt.text;
+                    }
+
+                    var optimage = $(opt.element).attr('data-image');
+                    if(!optimage){
+                       return opt.text;
+                    } else {
+                        var $opt = $(
+                           '<span><img src="' + optimage + '" width="60px" />' + opt.text + '</p> </span>'
+                        );
+                        return $opt;
+                    }
+                };
+               $('.select2-container--default .select2-selection--single').css({'height': '62px'});
+               $("input[name='state-d']").change(function(){
+                    var amButton = document.getElementById("am_button");
+                    var pmButton = document.getElementById("pm_button");
+                    var am = document.getElementById("am");
+                    var pm = document.getElementById("pm");
+                    var evening = document.getElementById("evening")
+                    console.log(amButton.checked)
+                    if (amButton.checked === true && pmButton.checked === false){
+                        console.log('AM')
+                        am.style.display = "block";
+                        pm.style.display = "none";
+                        evening.style.display = "none";
+                    } else if (pmButton.checked === true && amButton.checked === false){
+                        console.log('PM')
+                        pm.style.display = "block";
+                        am.style.display = "none";
+                        evening.style.display = "none";
+
+                    }else if (pmButton.checked === false && amButton.checked === false){
+                        pm.style.display = "none";
+                        am.style.display = "none";
+                        evening.style.display = "block";
+
+                    }
+                });
+            </script>
+            </div>
+    </div>
+</div>
+
+{% endblock %}

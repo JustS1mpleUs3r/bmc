@@ -1,0 +1,305 @@
+<!-- Inheriting all linked files -->
+{% extends 'base.html' %} {% include 'header.html' %}
+
+<!-- head section -->
+{% block title %} Flask CRUD operation {% endblock %}
+
+
+<!-- Body section -->
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <style>
+                .switch-toggle {
+                    display: inline-block;
+                   float: left;
+                   background: #242729;
+                    border-radius: 5px;
+                    max-height: 40px;
+                }
+                .switch-toggle input {
+                  position: absolute;
+                  opacity: 0;
+                }
+                .switch-toggle input + label {
+                  padding: 7px;
+                  float:left;
+                  color: #fff;
+                  cursor: pointer;
+                }
+                .switch-toggle input:checked + label {
+                    background: #12536A;
+                    max-height: 40px;
+
+                }
+                label {
+                    margin-bottom: 0rem;
+                }
+            </style>
+            <div class="jumbotron p-3">
+                {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+
+                <div class="alert alert-success alert-dismissable" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">
+                            x
+                        </span>
+                    </button> {{message}}
+                </div>
+
+                {% endfor %} {% endif %} {%endwith%}
+
+                <h3 style="display: inline-block">Edit rooms on {{ date }}</h3>
+                <div class="switch-toggle switch-3 switch-candy float-right" >
+
+                      <input id="am_button" name="state-d" type="radio" checked="checked" />
+                      <label for="am_button" onclick="">AM</label>
+
+                      <input id="pm_button" name="state-d" type="radio" />
+                      <label for="pm_button" class="disabled" onclick="">PM</label>
+
+                      <input id="evening_button" name="state-d" type="radio" />
+                      <label for="evening_button" onclick="">EVENING</label>
+
+                </div>
+            <form action="{{url_for('update_rooms', date=date)}}" enctype="multipart/form-data" method="POST" >
+                    <div id="am">
+                        <table class="table table-hover table-dark">
+
+                        <tr>
+                            <th>Room#</th>
+                            <th>Provider</th>
+                            <th>Medical Assistant</th>
+                            <th>Medical Assistant</th>
+                            <th>Action</th>
+                        </tr>
+                        {% for row in room_data %}
+
+                        <tr>
+                            <td>{{row.room_number}}</td>
+                            <div class="form-group">
+                                <td>
+        <!--                            img src={{(row.provider.photo)}} style="margin-right: 15px" width=50 > {{row.provider.full_name}}-->
+                                    <input type="hidden" name="id" value="{{row.id}}">
+
+                                    <select class="bruh form-control" hidden="true" name="provider">
+                                        <option value="{{row.provider.id}}" data-image="{{row.provider.photo}}" selected> {{row.provider.full_name}}</option>
+                                        {% for p in provider_data if not row.provider.id == p.id %}
+                                        <option value="{{p.id}}" data-image={{p.photo}}">{{p.full_name}}</option>
+                                        {% endfor %}
+
+                                    </select>
+                                </td>
+                            </div>
+                            <div class="form-group"  >
+
+                                <td>
+                                    <select class="bruh form-control" hidden="true" name="ma" >
+                                        <option value="{{row.ma.id}}" data-image="{{row.ma.photo}}" selected> {{row.ma.full_name}}</option>
+                                        {% for p in ma_data if not row.ma.id == p.id %}
+                                        <option value="{{p.id}}" data-image={{p.photo}}">{{p.full_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="bruh form-control" hidden="true" name="ma_helper" >
+                                        <option value="{{row.ma_helper.id}}" data-image="{{row.ma_helper.photo}}" selected> {{row.ma_helper.full_name}}</option>
+                                        {% for p in ma_data if not row.ma_helper.id == p.id %}
+                                        <option value="{{p.id}}" data-image={{p.photo}}">{{p.full_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <a href="/delete_room/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You sure To Delete ?')">Delete</a>
+                                </td>
+                            </div>
+
+                        </tr>
+                        {% endfor %}
+                        </table>
+                    </div>
+                    <div id="pm" style="display: none">
+
+                        <table class="table table-hover table-dark">
+
+                        <tr>
+                            <th>Room#</th>
+                            <th>Provider</th>
+                            <th>Medical Assistant</th>
+                            <th>Medical Assistant 2</th>
+                            <th>Action</th>
+                        </tr>
+                        {% for row in room_data_pm %}
+
+                        <tr>
+                            <td>{{row.room_number}}</td>
+                            <div class="form-group">
+                                <td>
+        <!--                            img src={{(row.provider.photo)}} style="margin-right: 15px" width=50 > {{row.provider.full_name}}-->
+                                    <input type="hidden" name="id" value="{{row.id}}">
+
+                                    <select class="bruh form-control" hidden="true" name="provider">
+                                        <option value="{{row.provider.id}}" data-image="{{row.provider.photo}}" selected> {{row.provider.full_name}}</option>
+                                        {% for p in provider_data if not row.provider.id == p.id %}
+                                        <option value="{{p.id}}" data-image={{p.photo}}">{{p.full_name}}</option>
+                                        {% endfor %}
+
+                                    </select>
+                                </td>
+                            </div>
+                            <div class="form-group"  >
+
+                                <td>
+                                    <select class="bruh form-control" hidden="true" name="ma" >
+                                        <option value="{{row.ma.id}}" data-image="{{row.ma.photo}}" selected> {{row.ma.full_name}}</option>
+                                        {% for p in ma_data if not row.ma.id == p.id %}
+                                        <option value="{{p.id}}" data-image={{p.photo}}">{{p.full_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="bruh form-control" hidden="true" name="ma_helper" >
+                                        <option value="{{row.ma_helper.id}}" data-image="{{row.ma_helper.photo}}" selected> {{row.ma_helper.full_name}}</option>
+                                        {% for p in ma_data if not row.ma_helper.id == p.id %}
+                                        <option value="{{p.id}}" data-image={{p.photo}}">{{p.full_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <a href="/delete_room/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You sure To Delete ?')">Delete</a>
+                                </td>
+                            </div>
+
+                        </tr>
+                        {% endfor %}
+                        </table>
+
+                    </div>
+                    <div id="evening" style="display: none">
+
+                        <table class="table table-hover table-dark">
+
+                        <tr>
+                            <th>Room#</th>
+                            <th>Provider</th>
+                            <th>Medical Assistant</th>
+                            <th>Medical Assistant 2</th>
+                            <th>Action</th>
+                        </tr>
+                        {% for row in room_data_ev %}
+
+                        <tr>
+                            <td>{{row.room_number}}</td>
+                            <div class="form-group">
+                                <td>
+        <!--                            img src={{(row.provider.photo)}} style="margin-right: 15px" width=50 > {{row.provider.full_name}}-->
+                                    <input type="hidden" name="id" value="{{row.id}}">
+
+                                    <select class="bruh form-control" hidden="true" name="provider">
+                                        <option value="{{row.provider.id}}" data-image="{{row.provider.photo}}" selected> {{row.provider.full_name}}</option>
+                                        {% for p in provider_data if not row.provider.id == p.id %}
+                                        <option value="{{p.id}}" data-image={{p.photo}}">{{p.full_name}}</option>
+                                        {% endfor %}
+
+                                    </select>
+                                </td>
+                            </div>
+                            <div class="form-group"  >
+
+                                <td>
+                                    <select class="bruh form-control" hidden="true" name="ma" >
+                                        <option value="{{row.ma.id}}" data-image="{{row.ma.photo}}" selected> {{row.ma.full_name}}</option>
+                                        {% for p in ma_data if not row.ma.id == p.id %}
+                                        <option value="{{p.id}}" data-image={{p.photo}}">{{p.full_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="bruh form-control" hidden="true" name="ma_helper" >
+                                        <option value="{{row.ma_helper.id}}" data-image="{{row.ma_helper.photo}}" selected> {{row.ma_helper.full_name}}</option>
+                                        {% for p in ma_data if not row.ma_helper.id == p.id %}
+                                        <option value="{{p.id}}" data-image={{p.photo}}">{{p.full_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            <td>
+                                    <a href="/delete_room/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You sure To Delete ?')">Delete</a>
+                                </td>
+                            </div>
+
+                        </tr>
+                        {% endfor %}
+                        </table>
+
+                    </div>
+
+
+                <button class="btn btn-bmc"  type="submit">SEND</button>
+
+            </form>
+
+                <!-- /content -->
+                <!-- scripts -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.js"></script>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.css" />
+
+                <script type="text/javascript">
+                   $(".bruh ").select2({
+                        templateResult: formatState,
+                        templateSelection: formatState
+                    });
+
+                    function formatState (opt) {
+                        if (!opt.id) {
+                            return opt.text;
+                        }
+
+                        var optimage = $(opt.element).attr('data-image');
+                        if(!optimage){
+                           return opt.text;
+                        } else {
+                            var $opt = $(
+                               '<span><img src="' + optimage + '" height="60px"  />' + opt.text + '</p> </span>'
+                            );
+                            return $opt;
+                        }
+                    };
+                   $('.select2-container--default .select2-selection--single').css({'height': '62px'});
+                </script>
+                <script>
+                $("input[name='state-d']").change(function(){
+                    var amButton = document.getElementById("am_button");
+                    var pmButton = document.getElementById("pm_button");
+                    var am = document.getElementById("am");
+                    var pm = document.getElementById("pm");
+                    var evening = document.getElementById("evening")
+                    console.log(amButton.checked)
+                    if (amButton.checked === true && pmButton.checked === false){
+                        console.log('AM')
+                        am.style.display = "block";
+                        pm.style.display = "none";
+                        evening.style.display = "none";
+                    } else if (pmButton.checked === true && amButton.checked === false){
+                        console.log('PM')
+                        pm.style.display = "block";
+                        am.style.display = "none";
+                        evening.style.display = "none";
+
+                    }else if (pmButton.checked === false && amButton.checked === false){
+                        pm.style.display = "none";
+                        am.style.display = "none";
+                        evening.style.display = "block";
+
+                    }
+                });
+            </script>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

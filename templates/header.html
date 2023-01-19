@@ -1,0 +1,55 @@
+{% extends 'base.html' %} {% block title %} BMC {% endblock %} {% block body %}
+<style>
+    .navbar-custom {
+        background-color: #1A7595;
+    }
+    .navbar-custom .navbar-brand,
+    .navbar-custom .navbar-text {
+        color: white;
+    }
+    .text{
+        font-family:Avenir-book;
+    }
+    .wrapper {
+        display: grid;
+        align-items: center;
+        grid-template-areas: "logo navbar-header";
+        grid-template-columns: 15% 45% ;
+        gap: 0.5rem;
+        position: relative;
+    }
+    .logo {
+        grid-area: logo;
+        position: relative;
+        z-index: 3;
+    }
+    .navbar {
+        justify-content: center;
+    }
+    .nav-container {
+         padding: 12px 24px;
+    }
+
+    .nav-container:not(:last-child) {
+        border-right: 1px solid #ddd;
+    }
+</style>
+<div class="jumbotron p-3" style=" background-color: #1A7595;">
+    <div class="wrapper">
+        <div class="logo">
+            <img  src="/static/bmc.svg">
+        </div>
+        <div class="navbar-header navbar-custom" style="text-align: center">
+            <div>
+                <a class="navbar-brand nav-container text" href="/">Rooms</a>
+                <a class="navbar-brand nav-container text" href="/providers">Providers</a>
+                <a class="navbar-brand nav-container text" href="/ma">Medical Assistants</a>
+                <a class="navbar-brand nav-container text" href="/show">Show Schedule</a>
+                <a class="navbar-brand nav-container text" href="/stats">Stats</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

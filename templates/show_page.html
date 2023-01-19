@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .row {
+    margin-top: -13px;
+    margin-left:-5px;
+    margin-right:-5px;
+  }
+
+  .column {
+    float: left;
+    width: 50%;
+    padding: 2px;
+  }
+
+  /* Clearfix (clear floats) */
+  .row::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  table, tr, td {
+    border: solid 1px black;
+  }
+  td[rowspan]:not([rowspan="1"]) {
+    vertical-align : middle;
+  }
+  table {
+    height: 97vh;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  @media screen and (max-width: 600px) {
+    .column {
+      width: 100%;
+    }
+  }
+  </style>
+</head>
+<body>
+<div class="row">
+  <div class="column">
+    <table>
+      <caption>AM session</caption>
+      <tr>
+       <th>Room Number</th>
+        <th>Provider</th>
+        <th>MA</th>
+      </tr>
+      {% for unique in room_data_unique %}
+      {% for row in room_data %}
+      {% if row.provider.full_name == unique.provider.full_name %}
+
+      <tr>
+        <td style="width:10px;">{{row.room_number}}</td>
+        <td><img src={{(row.provider.photo)}} height="20" >{{row.provider.full_name}}</td>
+        {% if row.ma_helper.full_name == 'None' %}
+        <td><img src={{(row.ma.photo)}} height="20" >{{row.ma.full_name}}</td>
+        {% else %}
+        <td><img src={{(row.ma.photo)}} height="20" >{{row.ma.full_name}}  /  <img src={{(row.ma_helper.photo)}} height="20" >{{row.ma_helper.full_name}}</td>
+        {% endif %}
+      </tr>
+      {% endif %}
+      {% endfor %}
+      {% endfor %}
+    </table>
+  </div>
+  <div class="column">
+    <table>
+      <caption>PM session</caption>
+      <tr>
+        <th>Room Number</th>
+        <th>Provider</th>
+        <th>MA</th>
+      </tr>
+      {% for unique in room_data_unique_pm %}
+      {% for row in room_data_pm %}
+      {% if row.provider.full_name == unique.provider.full_name %}
+      <tr>
+        <td style="width:10px;">{{row.room_number}}</td>
+        <td><img src={{(row.provider.photo)}} height="20" >{{row.provider.full_name}}</td>
+        {% if row.ma_helper.full_name == 'None' %}
+        <td><img src={{(row.ma.photo)}} height="20" >{{row.ma.full_name}}</td>
+        {% else %}
+        <td><img src={{(row.ma.photo)}} height="20" >{{row.ma.full_name}}  /  <img src={{(row.ma_helper.photo)}} height="20" >{{row.ma_helper.full_name}}</td>
+        {% endif %}
+      </tr>
+      {% endif %}
+      {% endfor %}
+      {% endfor %}
+    </table>
+  </div>
+</div>
+<script>
+  for (let i=0; i< 2; i++) {
+    const table = document.querySelectorAll('table')[i];
+
+    let headerCell = null;
+    let headerSecondeCell = null;
+    for (let row of table.rows) {
+      const firstCell = row.cells[1];
+      const secondColCell = row.cells[2];
+
+      if ((headerSecondeCell === null && headerCell === null) || (firstCell.innerText !== headerCell.innerText ||  secondColCell.innerText !== headerSecondeCell.innerText)) {
+        headerCell = firstCell;
+        headerSecondeCell = secondColCell;
+      } else {
+        headerCell.rowSpan++;
+        headerSecondeCell.rowSpan++;
+        firstCell.remove();
+        secondColCell.remove();
+      }
+    }
+  }
+</script>
+</body>
+</html>

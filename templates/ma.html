@@ -1,0 +1,121 @@
+<!-- Inheriting all linked files -->
+{% extends 'base.html' %} {% include 'header.html' %}
+
+<!-- head section -->
+{% block title %} Flask CRUD operation {% endblock %}
+
+
+<!-- Body section -->
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron p-3">
+                {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+
+                <div class="alert alert-success alert-dismissable" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                        <span aria-hidden="true">
+                            x
+                        </span>
+                    </button> {{message}}
+                </div>
+
+                {% endfor %} {% endif %} {%endwith%}
+                <h3>Manage <b>Medical Assistants</b> <button type="button" class="btn btn-bmc float-right" data-toggle="modal" data-target="#mymodal">Add new Medical Assistant</button> </h3>
+                <table class="table table-hover table-dark">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Photo</th>
+                        <th>Action</th>
+                    </tr>
+
+                    {% for row in all_data %}
+
+                    <tr>
+                        <td>{{row.id}}</td>
+                        <td>{{row.full_name}}</td>
+                        <td ><img src={{(row.photo)}} height="50" ></td>
+                        <td>
+                            <a href="/update_ma/{{row.id}}" class="btn btn-info btn-xs" data-toggle="modal" data-target="#modaledit{{row.id}}">Edit</a>
+                            <a href="/delete_ma/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You sure To Delete ?')">Delete</a>
+                        </td>
+                    </tr>
+
+                    <!-- Model for updating employee data -->
+                    <div id="modaledit{{row.id}}" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title"> Update Employee Data </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{url_for('update_ma')}}" enctype="multipart/form-data" method="POST">
+
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input type="hidden" name="id" value="{{row.id}}">
+                                            <input type="text" class="form-control" name="name" value="{{row.full_name}}" required="1">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Photo</label>
+                                            <input type="file" class="form-control" name="photo" value="{{row.photo}}" required="1">
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button class="btn btn-info" type="submit"> Update</button>
+                                            <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+
+                </table>
+
+            </div>
+
+            <!-- Model for adding employee -->
+            <div id="mymodal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title"> Add Employee </h4>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{url_for('insert_ma')}}" enctype="multipart/form-data" method="POST">
+
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" class="form-control" name="name" required="1">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Photo</label>
+                                    <input type="file" class="form-control" name="photo" required="1" >
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-bmc" type="submit"> Add Medical Assistant </button>
+                                    <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

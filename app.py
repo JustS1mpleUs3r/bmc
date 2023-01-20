@@ -9,6 +9,7 @@ import os
 from datetime import datetime, date, timedelta, timezone
 import enum
 
+db = SQLAlchemy(app)
 
 
 # Solve problem with images on edit_rooms
@@ -24,17 +25,6 @@ try:
 except Exception as err:
     print(err)
     print(datetime.now().strftime("%Y-%m-%d"))
-
-app = Flask(__name__)
-app.secret_key = "BRUH"
-
-path = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + os.path.join(path, 'database.sqlite')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# Why?
-app.config['UPLOAD_FOLDER'] = "/static/images"
-
-db = SQLAlchemy(app)
 
 
 class Providers(db.Model):
@@ -392,8 +382,17 @@ def createNoneUsers(model):
         return
     else:
         return
-if __name__ == "__main__":
+def create_app():
+    app = Flask(__name__)
+    app.secret_key = "BRUH"
+
+    path = os.path.abspath(os.path.dirname(__file__))
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + os.path.join(path, 'database.sqlite')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # Why?
+    app.config['UPLOAD_FOLDER'] = "/static/images"
+
+    db = SQLAlchemy(app)
     createNoneUsers(Providers)
     createNoneUsers(MA)
     app.run(debug=True)
-    # app.run(host="0.0.0.0")

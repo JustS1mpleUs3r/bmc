@@ -12,7 +12,7 @@ import enum
 # Solve problem with images on edit_rooms
 # Create stats and send it to email
 # think about deployment
-
+db = None
 try:
     import ntplib
 

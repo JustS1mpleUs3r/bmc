@@ -380,7 +380,8 @@ def createNoneUsers(model):
         return
     
 def create_app():
-    global application = Flask(__name__)
+    global application
+    application = Flask(__name__)
     application.secret_key = "BRUH"
 
     path = os.path.abspath(os.path.dirname(__file__))
@@ -388,8 +389,8 @@ def create_app():
     application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # Why?
     application.config['UPLOAD_FOLDER'] = "/static/images"
-
-    global db = SQLAlchemy(application)
+    global db
+    db = SQLAlchemy(application)
     if not os.path.isfile('database.sqlite'):
         db.create_all()
     createNoneUsers(Providers)

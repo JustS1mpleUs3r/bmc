@@ -23,7 +23,7 @@ try:
     print(f"NTP: {(datetime.fromtimestamp(response.tx_time, timezone.utc)).strftime( '%Y-%m-%d')}")
 except Exception as err:
     print(err)
-    print(datetime.strftime("%Y-%m-%d", time.gmtime()))
+    print(datetime.now().strftime("%Y-%m-%d"))
 
 app = Flask(__name__)
 app.secret_key = "BRUH"

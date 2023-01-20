@@ -88,7 +88,7 @@ class Schedule(db.Model):
     working_time = db.Column(db.Enum(WorkingTime), nullable=False)
 
 
-@app.route('/')
+@application.route('/')
 def index():
     flag_generate = False
     date = request.args.get('date')
@@ -118,7 +118,7 @@ def index():
                            room_data_ev=room_data_ev)
 
 
-@app.route('/generate_rooms/<date>')
+@application.route('/generate_rooms/<date>')
 def generate_rooms(amount, date):
     week_ago_date = (datetime.strptime(date, "%Y-%m-%d") - timedelta(weeks=1)).strftime("%Y-%m-%d")
     print(week_ago_date)
@@ -155,7 +155,7 @@ def generate_rooms(amount, date):
     return True
 
 
-@app.route('/show')
+@application.route('/show')
 def show():
     date = (datetime.now()).strftime("%Y-%m-%d")
     room_data = Rooms.query.join(Schedule).filter(Schedule.room_id == Rooms.id).filter(Schedule.sc_date == date).filter(
@@ -181,24 +181,24 @@ def show():
                            room_data_pm=room_data_pm)
 
 
-@app.route('/providers')
+@application.route('/providers')
 def provider():
     all_data = Providers.query.order_by(asc(Providers.id))
     return render_template("providers.html", all_data=all_data)
 
 
-@app.route('/ma')
+@application.route('/ma')
 def ma():
     all_data = MA.query.order_by(asc(MA.id))
     return render_template("ma.html", all_data=all_data)
 
 
-@app.route('/insert_provider', methods=['POST'])
+@application.route('/insert_provider', methods=['POST'])
 def insert_provider():
     if request.method == 'POST':
         name = request.form['name']
         photo = request.files['photo']
-        photo_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(photo.filename))
+        photo_path = os.path.join(application.config['UPLOAD_FOLDER'], secure_filename(photo.filename))
         photo.save(photo_path.split('/', 1)[1])
 
         my_data = Providers(name, photo_path)
@@ -209,12 +209,12 @@ def insert_provider():
         return redirect(url_for('provider'))
 
 
-@app.route('/insert_ma', methods=['POST'])
+@application.route('/insert_ma', methods=['POST'])
 def insert_ma():
     if request.method == 'POST':
         name = request.form['name']
         photo = request.files['photo']
-        photo_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(photo.filename))
+        photo_path = os.path.join(application.config['UPLOAD_FOLDER'], secure_filename(photo.filename))
         photo.save(photo_path.split('/', 1)[1])
 
         my_data = MA(name, photo_path)
@@ -225,7 +225,7 @@ def insert_ma():
         return redirect(url_for('ma'))
 
 
-@app.route('/update_provider', methods=['POST'])
+@application.route('/update_provider', methods=['POST'])
 def update_provider():
     if request.method == "POST":
         my_date = Providers.query.get(request.form.get('id'))
@@ -233,7 +233,7 @@ def update_provider():
         photo = request.files['photo']
         if photo.filename != '':
             os.remove(my_date.photo)
-            photo_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(photo.filename))
+            photo_path = os.path.join(application.config['UPLOAD_FOLDER'], secure_filename(photo.filename))
             photo.save(photo_path.split('/', 1)[1])
             my_date.photo = photo_path
 
@@ -242,7 +242,7 @@ def update_provider():
         return redirect(url_for('provider'))
 
 
-@app.route('/update_ma', methods=['POST'])
+@application.route('/update_ma', methods=['POST'])
 def update_ma():
     if request.method == "POST":
         my_date = MA.query.get(request.form.get('id'))
@@ -251,7 +251,7 @@ def update_ma():
         print(photo)
         if photo.filename != '':
             os.remove(my_date.photo)
-            photo_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(photo.filename))
+            photo_path = os.path.join(application.config['UPLOAD_FOLDER'], secure_filename(photo.filename))
             photo.save(photo_path.split('/', 1)[1])
             my_date.photo = photo_path
 
@@ -260,7 +260,7 @@ def update_ma():
         return redirect(url_for('ma'))
 
 
-@app.route('/delete_provider/<id>/')
+@application.route('/delete_provider/<id>/')
 def delete_provider(id):
     if id != '1':
         my_data = Providers.query.get(id)
@@ -274,7 +274,7 @@ def delete_provider(id):
         flash("Employee Data Deleted Successfully")
     return redirect(url_for('provider'))
 
-@app.route('/delete_ma/<id>/')
+@application.route('/delete_ma/<id>/')
 def delete_ma(id):
     print(id)
     if id != '1':
@@ -291,7 +291,7 @@ def delete_ma(id):
     return redirect(url_for('ma'))
 
 
-# @app.route('/create_room/<date>', methods=['POST'])
+# @application.route('/create_room/<date>', methods=['POST'])
 # def create_room(date):
 #     if request.method == "POST":
 #         room_number = request.form['room_number']
@@ -311,7 +311,7 @@ def delete_ma(id):
 #         return redirect(request.referrer)
 
 
-@app.route('/edit_rooms/<date>')
+@application.route('/edit_rooms/<date>')
 def edit_rooms(date):
     room_data = Rooms.query.join(Schedule).filter(Schedule.room_id == Rooms.id).filter(Schedule.sc_date == date).filter(Schedule.working_time == WorkingTime.am).all()
     room_data_pm = Rooms.query.join(Schedule).filter(Schedule.room_id == Rooms.id).filter(Schedule.sc_date == date).filter(Schedule.working_time == WorkingTime.pm).all()
@@ -328,7 +328,7 @@ def edit_rooms(date):
                            date=date)
 
 
-@app.route('/edited_rooms/<date>', methods=["POST"])
+@application.route('/edited_rooms/<date>', methods=["POST"])
 def update_rooms(date):
     if request.method == 'POST':
         r = RequestEditedRoom(request)
@@ -345,7 +345,7 @@ def update_rooms(date):
         return redirect(url_for('index'))
 
 
-@app.route('/delete_room/<id>/')
+@application.route('/delete_room/<id>/')
 def delete_room(id):
     my_data = Rooms.query.get(id)
     sc = Schedule.query.get(id)
@@ -380,18 +380,18 @@ def createNoneUsers(model):
         return
     
 def create_app():
-    app = Flask(__name__)
-    app.secret_key = "BRUH"
+    global application = Flask(__name__)
+    application.secret_key = "BRUH"
 
     path = os.path.abspath(os.path.dirname(__file__))
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + os.path.join(path, 'database.sqlite')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    application.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + os.path.join(path, 'database.sqlite')
+    application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # Why?
-    app.config['UPLOAD_FOLDER'] = "/static/images"
+    application.config['UPLOAD_FOLDER'] = "/static/images"
 
-    global db = SQLAlchemy(app)
+    global db = SQLAlchemy(application)
     if not os.path.isfile('database.sqlite'):
         db.create_all()
     createNoneUsers(Providers)
     createNoneUsers(MA)
-    app.run(debug=True)
+    application.run(debug=True)

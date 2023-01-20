@@ -9,9 +9,6 @@ import os
 from datetime import datetime, date, timedelta, timezone
 import enum
 
-db = SQLAlchemy(app)
-
-
 # Solve problem with images on edit_rooms
 # Create stats and send it to email
 # think about deployment
@@ -393,6 +390,8 @@ def create_app():
     app.config['UPLOAD_FOLDER'] = "/static/images"
 
     db = SQLAlchemy(app)
+    if not os.path.isfile('database.sqlite'):
+        db.create_all()
     createNoneUsers(Providers)
     createNoneUsers(MA)
     app.run(debug=True)

@@ -12,7 +12,6 @@ import enum
 # Solve problem with images on edit_rooms
 # Create stats and send it to email
 # think about deployment
-db = None
 try:
     import ntplib
 
@@ -379,6 +378,7 @@ def createNoneUsers(model):
         return
     else:
         return
+    
 def create_app():
     app = Flask(__name__)
     app.secret_key = "BRUH"
@@ -389,7 +389,7 @@ def create_app():
     # Why?
     app.config['UPLOAD_FOLDER'] = "/static/images"
 
-    db = SQLAlchemy(app)
+    global db = SQLAlchemy(app)
     if not os.path.isfile('database.sqlite'):
         db.create_all()
     createNoneUsers(Providers)
